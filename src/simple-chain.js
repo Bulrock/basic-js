@@ -11,31 +11,32 @@ const { NotImplementedError } = require('../extensions/index.js');
   },
 
   addLink(value) {
-    if(!this.chain){
-      this.chain = [];
-    }
-    if(value){
-      this.chain.push(value);
-    }
-    return this;
+    let result = {...this};
+    if(!result.chain) result.chain = [];
+    result.chain.push(value)
+    return result;
   },
 
   removeLink(position) {
-    if(!this.chain) return this
-    if(typeof position === NaN || !!(position % 1) === false || !this.chain[position]){
+    if(!Number.isInteger(position) || position > this.getLength() || position < 1){
       throw new Error("You can't remove incorrect link!");
     }
-    this.chain.splice(position, 1);
-    return this;
+    if(!this.chain) return {...this}
+    let result = {...this};
+    (result.chain ?? []).splice(position-1, 1);
+    return result;
   },
 
   reverseChain() {
-    this.chain?.reverse();
-    return this;
+    let result = {...this};
+    (result.chain ?? []).reverse();
+    return result;
   },
 
   finishChain() {
-    return this.chain?.map(value => `( ${value} )`).join('~~') || "";
+    let result = this.chain?.map(value => `( ${value} )`).join('~~') || "";
+    this.chain = [];
+    return result
   }
 };
 
